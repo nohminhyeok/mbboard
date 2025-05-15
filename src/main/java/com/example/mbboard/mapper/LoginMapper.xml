@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Ma pper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mbboard.mapper.LoginMapper">
+	<select id="login" parameterType="com.example.mbboard.dto.Member" resultType="com.example.mbboard.dto.Member">
+		SELECT
+			member_id memberId
+			, member_pw memberPw
+			, member_role memberRole
+		FROM member
+		WHERE member_id = #{memberId}
+		AND member_pw = #{memberPw}
+	</select>
+	
+	<select id="findById" parameterType="String" resultType="String">
+	    SELECT member_id 
+	    FROM member 
+	    WHERE member_id = #{id}
+	</select>
+	
+	<select id="memberList" parameterType="com.example.mbboard.dto.Member" resultType="map">
+		SELECT member_id AS memberId
+			, member_pw AS memberPw
+			, member_role AS memberRole
+		FROM member
+	</select>
+		
+	<insert id="insertMember" parameterType="com.example.mbboard.dto.Member">
+		INSERT INTO MEMBER(
+			member_id, member_pw, member_role
+		) VALUES ( 
+			#{memberId}, #{memberPw}, COALESCE(#{memberRole}, 'MEMBER')
+		)
+	</insert>
+	
+	<update id="updateMemberPw">
+		UPDATE member
+			SET member_pw = #{memberPw}
+		WHERE member_id = #{memberId}
+	</update>
+	
+	<update id="updateMember">
+		UPDATE member 
+			SET member_pw = #{memberPw}
+			, member_role = #{memberRole} 
+		WHERE member_id = #{memberId}
+	</update>
+</mapper>

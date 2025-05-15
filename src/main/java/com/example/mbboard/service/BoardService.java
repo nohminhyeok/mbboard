@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 public class BoardService implements IBoardService {
-    @Autowired BoardMapper boardMapper;
+    @Autowired BoardMapper boardMapper; // 인터페이스 형태로 의존성 주입 -> 디커플링
 
     @Override
     public List<BoardDto> getBoardList(Page p) {
