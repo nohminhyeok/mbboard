@@ -14,16 +14,16 @@
 	<h2>멤버리스트</h2>
 	<table border="1">
 		<tr>
-			<th>사용자 권한</th>
 			<th>아이디</th>
 			<th>비밀번호</th>
+			<th>사용자 권한</th>
 			<th>사용자 정보 수정</th>
 		</tr>
 		<c:forEach var="member" items="${memberList}">
 			<tr>
-				<td>${member.memberRole}</td>
 				<td>${member.memberId}</td>
 				<td>${member.memberPw}</td>
+				<td>${member.memberRole}</td>
 				<td>
 					<button type="button" class="updateBtn" 
 					        data-id="${member.memberId}"

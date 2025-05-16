@@ -11,15 +11,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.example.mbboard.dto.ConnectCount;
 import com.example.mbboard.dto.Member;
 import com.example.mbboard.service.ILoginService;
+import com.example.mbboard.service.IRootService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
 	@Autowired ILoginService loginService;
+	@Autowired IRootService rootService;
 	
 	@GetMapping("/joinMember")
 	public String joinMember() {
@@ -65,6 +67,14 @@ public class LoginController {
 	    if (loginMember != null) {
 	        // 세션에 로그인 정보 저장
 	        session.setAttribute("loginMember", loginMember);
+	        // 멤버(ADMIN, MEMBER) 카운트 +1
+	        ConnectCount cc = new ConnectCount();
+	        cc.setMemberRole(loginMember.getMemberRole());
+	        if(rootService.getConnectDateByKey(cc) == null) {
+	        	rootService.addConnectCount(cc); // 오늘 날짜 loginMember.getMemberRole()로 1행을 추가 카운트 = 1
+	        } else {
+	        	rootService.modifyConnectCount(cc); // 오늘 날짜 loginMember.getMemberRole()를 수정 카운트 +1
+	        }
 	    }
 	    return "login";  // 로그인 실패 시 다시 로그인 페이지로
 	}
