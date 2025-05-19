@@ -9,6 +9,7 @@ import com.example.mbboard.dto.Member;
 
 @Mapper
 public interface LoginMapper {
+
 	Member login(Member paramMember);
 
 	int insertMember(Member member);
@@ -20,4 +21,8 @@ public interface LoginMapper {
 	int updateMember(Member member);
 
 	int updateMemberPw(Member member);
+
+	int updateMemberPwByAdmin(Member member);
+
+	int updateMemberEmailPw(Member member);
 }

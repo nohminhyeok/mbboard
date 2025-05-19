@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.example.mbboard.dto.ConnectCount;
 import com.example.mbboard.dto.Member;
 import com.example.mbboard.service.ILoginService;
 import com.example.mbboard.service.IRootService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Controller
 public class LoginController {
 	@Autowired ILoginService loginService;
@@ -62,9 +66,28 @@ public class LoginController {
 	}
 	
 	@PostMapping("/login")
-	public String login(HttpSession session, Member paramMember) {
+	public String login(HttpSession session, Member paramMember, HttpServletResponse response) {
 	    Member loginMember = loginService.login(paramMember);
 	    if (loginMember != null) {
+	    	
+	    	log.info(paramMember.toString());
+	    	
+	    	// 클라이언트 쿠키에도 로그인에 성공한 ID만 저장
+	    	if(paramMember.getSaveIdCk() != null) {
+	    		Cookie c = new Cookie("saveId", paramMember.getMemberId());
+	    		/*
+	    			Cookie, HTTP의 일종으로 인터넷 사용자가 웹 사이트 방문시 그 사이트가 사용하고 있는 서버를 통해
+	    		 	클라이언트에 저장되는 정보이다, 서버에 저장되는 정보는  세션!
+	    		 	Cookie cookie = new Cookie("내가 생성하려는 쿠키ID", value); 쿠키 이름 지정하여 생성
+					cookie.setMaxAge(60*60*24); // 쿠키
+	    		
+	    		 */
+	    		response.addCookie(c);
+	    	} else {
+	    		Cookie c = new Cookie("saveId", "");
+	    		response.addCookie(c);	    		
+	    	}
+	    	
 	        // 세션에 로그인 정보 저장
 	        session.setAttribute("loginMember", loginMember);
 	        // 멤버(ADMIN, MEMBER) 카운트 +1
@@ -125,5 +148,35 @@ public class LoginController {
 		
 	    int result = loginService.updateMemberPw(member);
 	    return result > 0 ? "success" : "fail";
+	}
+	
+	@GetMapping("/findMemberPw")
+	public String findMemberPw() {
+		return "/findMemberPw";
+	} 
+	
+	@PostMapping("/findMemberPw")
+	public String findMemberPw(Member member) {
+		// 비밀번호 변경
+		loginService.updateMemberPwByAdmin(member);
+		// 분실 비밀번호 변경페이지로 redirect
+		return "rechangeMemberPw";
+	}
+	
+	@GetMapping("/rechangeMemberPw")
+	public String rechangeMemberPw() {
+		return "rechangeMemberPw";
+	}
+	
+	@PostMapping("/rechangeMemberPw")
+	public String rechangeMemberPw(@RequestParam String reMemberPw
+									,@RequestParam String memberPw
+									,@RequestParam String memberId) {
+		Member member = new Member();
+		member.setMemberPw(memberPw);
+		member.setReMemberPw(reMemberPw);
+		
+		int result = loginService.updateMemberEmailPw(member);
+		return result > 0 ? "login" : "rechangeMemberPw";
 	}
 }

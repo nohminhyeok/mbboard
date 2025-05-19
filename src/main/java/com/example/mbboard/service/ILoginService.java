@@ -17,4 +17,8 @@ public interface ILoginService {
 	int updateMember(Member member);
 	
 	int updateMemberPw(Member member);
+	
+	void updateMemberPwByAdmin(Member member);
+
+	int updateMemberEmailPw(Member member);
 }

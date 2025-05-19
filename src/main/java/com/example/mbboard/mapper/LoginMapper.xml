@@ -44,4 +44,20 @@
 			, member_role = #{memberRole} 
 		WHERE member_id = #{memberId}
 	</update>
+	
+	<update id="updateMemberPwByAdmin" parameterType="com.example.mbboard.dto.Member">
+		UPDATE member
+		SET member_pw = #{memberPw}
+			,pwcktime = NOW()
+		WHERE member_id = #{memberId} 
+		AND email = #{email}
+	</update>
+	
+	<update id="updateMemberEmailPw" parameterType="com.example.mbboard.dto.Member">
+		UPDATE member
+		SET member_pw = #{reMemberPw}
+		WHERE member_pw = #{memberPw}
+		AND pwcktime is NOT NULL
+		AND TIMESTAMPDIFF(minute, pwcktime, NOW()) &lt; 11
+	</update>
 </mapper>

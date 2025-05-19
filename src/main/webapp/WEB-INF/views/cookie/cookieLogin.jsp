@@ -7,9 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<c:if test="${loginMember == null}">
-		<!-- 로그인이 안 되어 있다면 -->
-		<form method="post" action="/login">
+	<h1>cookieLogin</h1>
+		<form method="post" action="/cookieLogin">
 			<div>
 				<div>memberId:</div>
 				<div>
@@ -22,25 +21,5 @@
 			</div>
 		</form>
 		<a href="/joinMember">회원가입</a>
-		<a href="/findMemberPw">비밀번호 찾기</a>
-	</c:if>
-	
-	<!-- 로그인 되어 있다면 -->
-	<c:if test="${loginMember != null && loginMember.memberRole != 'ADMIN'}">
-		<div>
-			${loginMember.memberId}님 <a href="/member/memberHome">Home</a>으로 이동
-		</div>
-		<div>
-			<a href="/logout">로그아웃</a>
-		</div>
-	</c:if>
-	<c:if test="${loginMember.memberRole == 'ADMIN'}">
-		<div>
-			${loginMember.memberId}님 <a href="/admin/adminHome">관리자 사이트</a>로 이동
-		</div>
-		<div>
-			<a href="/logout">로그아웃</a>
-		</div>
-	</c:if>
 </body>
 </html>
